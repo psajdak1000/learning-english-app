@@ -1,0 +1,22 @@
+@'
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend/Maven
+backend/target/
+backend/*.log
+backend/.env
+
+# Frontend/Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+'@ | Set-Content -Encoding UTF8 .gitignore
+
+git rm -r --cached .idea  # przestań śledzić pliki IntelliJ
