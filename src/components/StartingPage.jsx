@@ -10,19 +10,19 @@ export default function StartingPage({ onLoginClick }) {
       const timer = setInterval(() => {
         current += increment;
         if (current >= target) {
-          element.textContent = target >= 1000 
-            ? (target/1000).toFixed(0) + 'K+' 
+          element.textContent = target >= 1000
+            ? (target/1000).toFixed(0) + 'K+'
             : target + '%';
           clearInterval(timer);
+
         } else {
-          element.textContent = current >= 1000 
-            ? (current/1000).toFixed(1) + 'K+' 
+          element.textContent = current >= 1000
+            ? (current/1000).toFixed(1) + 'K+'
             : Math.floor(current) + '%';
         }
       }, 30);
     };
 
-    // Obserwator dla animacji liczników
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -55,8 +55,8 @@ export default function StartingPage({ onLoginClick }) {
   };
 
   const learnMore = () => {
-    document.querySelector('.categories')?.scrollIntoView({ 
-      behavior: 'smooth' 
+    document.querySelector('.categories')?.scrollIntoView({
+      behavior: 'smooth'
     });
   };
 
@@ -74,14 +74,15 @@ export default function StartingPage({ onLoginClick }) {
 
   return (
     <div className="starting-page">
-      {/* Header */}
       <header className="header">
         <div className="logo">
           📚 English Master
         </div>
+        <div className="header-actions">
         <button className="login-btn" onClick={goToLogin}>
           Zaloguj się
         </button>
+        </div>
       </header>
 
       {/* Hero Section */}
@@ -106,7 +107,7 @@ export default function StartingPage({ onLoginClick }) {
             <div className="card-icon">🗂️</div>
             <h3>Fiszki</h3>
             <p>
-              Ucz się nowych słów i zwrotów z interaktywnymi fiszkami. 
+              Ucz się nowych słów i zwrotów z interaktywnymi fiszkami.
               System powtórek sprawi, że zapamiętasz więcej!
             </p>
             <button className="card-btn" onClick={openFlashcards}>
@@ -118,7 +119,7 @@ export default function StartingPage({ onLoginClick }) {
             <div className="card-icon">🎯</div>
             <h3>Quizy</h3>
             <p>
-              Sprawdź swoją wiedzę w ciekawych quizach. 
+              Sprawdź swoją wiedzę w ciekawych quizach.
               Różne poziomy trudności dla każdego ucznia.
             </p>
             <button className="card-btn" onClick={openQuizzes}>
@@ -130,7 +131,7 @@ export default function StartingPage({ onLoginClick }) {
             <div className="card-icon">🤖</div>
             <h3>Chatbot AI</h3>
             <p>
-              Ćwicz konwersacje z inteligentnym chatbotem. 
+              Ćwicz konwersacje z inteligentnym chatbotem.
               Naturalne rozmowy 24/7 dopasowane do Twojego poziomu.
             </p>
             <button className="card-btn" onClick={openChatbot}>

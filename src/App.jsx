@@ -1,30 +1,40 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Login from './components/Login';
+import Register from './components/Register';
 import StartingPage from './components/StartingPage';
-
 
 function App() {
   const [showStartAnimation, setShowStartAnimation] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
-    // Animacja znika po 3 sekundach
     const timer = setTimeout(() => setShowStartAnimation(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 
   const handleLoginClick = () => {
     setShowLogin(true);
+    setShowRegister(false);
+  };
+
+  const handleRegisterClick = () => {
+    setShowRegister(true);
+    setShowLogin(false);
   };
 
   const handleBackToHome = () => {
     setShowLogin(false);
+    setShowRegister(false);
   };
 
   const handleLogin = (credentials) => {
     console.log('Logowanie:', credentials);
-    // Tu dodasz logikę logowania
+  };
+
+  const handleRegister = (credentials) => {
+    console.log('Rejestracja:', credentials);
   };
 
   return (
@@ -52,8 +62,8 @@ function App() {
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                style={{ 
-                  fontSize: '3.5rem', 
+                style={{
+                  fontSize: '3.5rem',
                   fontWeight: 'bold',
                   marginBottom: '1rem',
                   textShadow: '0 2px 10px rgba(0,0,0,0.2)'
@@ -65,7 +75,7 @@ function App() {
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                style={{ 
+                style={{
                   fontSize: '1.4rem',
                   opacity: 0.9
                 }}
@@ -73,16 +83,16 @@ function App() {
                 Ucz się angielskiego w nowoczesny sposób
               </motion.p>
               <motion.div
-                animate={{ 
+                animate={{
                   scale: [1, 1.2, 1],
                   rotate: [0, 360]
                 }}
-                transition={{ 
+                transition={{
                   duration: 2,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                style={{ 
+                style={{
                   marginTop: '2rem',
                   fontSize: '4rem'
                 }}
@@ -93,12 +103,24 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
-      
-      {/* Po animacji pokazujemy stronę startową lub logowanie */}
+
+      {/* Widoki po animacji */}
       {!showStartAnimation && (
-        showLogin 
-          ? <Login onLogin={handleLogin} onBackToHome={handleBackToHome} /> 
-          : <StartingPage onLoginClick={handleLoginClick} />
+        showLogin
+          ? <Login
+              onLogin={handleLogin}
+              onBackToHome={handleBackToHome}
+              onRegisterClick={handleRegisterClick}
+            />
+          : showRegister
+            ? <Register
+                onRegister={handleRegister}
+                onBackToHome={handleBackToHome}
+                onBackToLogin={handleLoginClick}
+              />
+            : <StartingPage
+                onLoginClick={handleLoginClick}
+              />
       )}
     </>
   );
