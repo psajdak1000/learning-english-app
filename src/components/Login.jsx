@@ -6,7 +6,7 @@ export default function Login({ onLogin, onBackToHome, onRegisterClick }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (!email || !password) {
       setError('Wszystkie pola są wymagane!');
@@ -48,10 +48,18 @@ export default function Login({ onLogin, onBackToHome, onRegisterClick }) {
           />
         </div>
         {error && <div className="login-error">{error}</div>}
-        <button className="login-btn" type="submit">Zaloguj się</button>
+        <button className="login-btn" type="submit">
+          Zaloguj się
+        </button>
         <div className="login-help">
           Nie masz konta?{' '}
-          <a href="#" onClick={e => {e.preventDefault(); onRegisterClick && onRegisterClick(); }}>
+          <a
+            href="#"
+            onClick={e => {
+              e.preventDefault();
+              onRegisterClick && onRegisterClick();
+            }}
+          >
             Załóż konto
           </a>
         </div>

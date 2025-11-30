@@ -21,20 +21,35 @@ function App() {
     setShowRegister(false);
     setShowFlashcards(false);
   };
+
   const handleRegisterClick = () => {
     setShowRegister(true);
     setShowLogin(false);
     setShowFlashcards(false);
   };
+
   const handleFlashcardsClick = () => {
     setShowFlashcards(true);
     setShowLogin(false);
     setShowRegister(false);
   };
+
   const handleBackToHome = () => {
     setShowLogin(false);
     setShowRegister(false);
     setShowFlashcards(false);
+  };
+
+  const handleLogin = ({ email, password }) => {
+    console.log('Logowanie', email, password);
+    setShowLogin(false);
+    setShowFlashcards(true);
+  };
+
+  const handleRegister = ({ email, password }) => {
+    console.log('Rejestracja', email, password);
+    setShowRegister(false);
+    setShowLogin(true);
   };
 
   return (
@@ -92,7 +107,7 @@ function App() {
                 transition={{
                   duration: 1.2,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: 'easeInOut'
                 }}
                 style={{
                   marginTop: '2.5rem',
@@ -108,17 +123,27 @@ function App() {
       </AnimatePresence>
 
       {!showStartAnimation && (
-        showLogin
-          ? <Login onLogin={() => {}} onBackToHome={handleBackToHome} onRegisterClick={handleRegisterClick}/>
-          : showRegister
-            ? <Register onRegister={() => {}} onBackToHome={handleBackToHome} onBackToLogin={handleLoginClick}/>
-            : showFlashcards
-              ? <FlashcardsView onBack={handleBackToHome} />
-              : <StartingPage
-                  onLoginClick={handleLoginClick}
-                  onRegisterClick={handleRegisterClick}
-                  onFlashcardsClick={handleFlashcardsClick}
-                />
+        showLogin ? (
+          <Login
+            onLogin={handleLogin}
+            onBackToHome={handleBackToHome}
+            onRegisterClick={handleRegisterClick}
+          />
+        ) : showRegister ? (
+          <Register
+            onRegister={handleRegister}
+            onBackToHome={handleBackToHome}
+            onBackToLogin={handleLoginClick}
+          />
+        ) : showFlashcards ? (
+          <FlashcardsView onBack={handleBackToHome} />
+        ) : (
+          <StartingPage
+            onLoginClick={handleLoginClick}
+            onRegisterClick={handleRegisterClick}
+            onFlashcardsClick={handleFlashcardsClick}
+          />
+        )
       )}
     </>
   );

@@ -1,36 +1,86 @@
+import { useState } from 'react';
 import Flashcard from './Flashcard';
+import './FlashcardsView.css';
 
-const flashcards = [
-  { word: "cat", translation: "kot" },
-  { word: "book", translation: "książka" },
-  { word: "hello", translation: "cześć" },
-  // Dodaj więcej
-];
+const categories = {
+  animals: {
+    name: 'Zwierzęta',
+    cards: [
+      { word: 'cat', answer: 'kot' },
+      { word: 'dog', answer: 'pies' },
+      { word: 'owca', answer: 'sheep' },
+    ],
+  },
+  basics: {
+    name: 'Podstawowe słowa',
+    cards: [
+      { word: 'hello', answer: 'cześć' },
+      { word: 'book', answer: 'książka' },
+    ],
+  },
+};
 
 export default function FlashcardsView({ onBack }) {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleSelectCategory = key => {
+    setSelectedCategory(key);
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+  };
+
+  const currentCards = selectedCategory
+    ? categories[selectedCategory].cards
+    : [];
+
   return (
-    <div style={{ minHeight: '100vh', paddingTop: '3rem' }}>
-      <button
-        style={{
-          margin: '1rem auto 2rem auto',
-          display: 'block',
-          background: 'none',
-          color: '#e53935',
-          border: '2px solid #e53935',
-          borderRadius: '10px',
-          fontWeight: '600',
-          padding: '0.8rem 2rem',
-          cursor: 'pointer',
-          fontSize: '1rem',
-        }}
-        onClick={onBack}
-      >
+    <div className="flashcards-page">
+      <button className="flashcards-back-btn" onClick={onBack}>
         Powrót do strony głównej
       </button>
-      <h1 style={{ color: '#fafafa', textAlign: 'center', marginBottom: '2rem' }}>Fiszki</h1>
-      {flashcards.map(card => (
-        <Flashcard key={card.word} word={card.word} translation={card.translation} />
-      ))}
+
+      {!selectedCategory ? (
+        <>
+          <h1 className="flashcards-title">Wybierz kategorię fiszek</h1>
+          <div className="flashcards-categories">
+            {Object.entries(categories).map(([key, cat]) => (
+              <button
+                key={key}
+                className="flashcards-category-btn"
+                onClick={() => handleSelectCategory(key)}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flashcards-header-row">
+            <h1 className="flashcards-title">
+              {categories[selectedCategory].name}
+            </h1>
+            <button
+              className="flashcards-small-back"
+              onClick={handleBackToCategories}
+            >
+              ← Zmień kategorię
+            </button>
+          </div>
+
+          <div className="flashcards-list">
+            {currentCards.map(card => (
+              <Flashcard
+                key={card.word}
+                word={card.word}
+                answer={card.answer}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

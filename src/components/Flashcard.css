@@ -92,3 +92,43 @@
   margin-top: 1.2rem;
   font-weight: bold;
 }
+.flashcards-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.flashcards-category-btn {
+  min-width: 180px;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  border: none;
+  background: #1f1f1f;
+  color: #fafafa;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.flashcards-category-btn:hover {
+  transform: translateY(-2px);
+  background: #e53935;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+.flashcards-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.flashcards-small-back {
+  border: none;
+  background: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.9rem;
+}

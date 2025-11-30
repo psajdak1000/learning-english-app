@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Register.css';
 
-export default function Register({ onRegister, onBackToHome, onBackToLogin}) {
+export default function Register({ onRegister, onBackToHome, onBackToLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -65,17 +65,16 @@ export default function Register({ onRegister, onBackToHome, onBackToLogin}) {
           Zarejestruj się
         </button>
         {onBackToLogin && (
-      <button
-        className="back-login-btn"
-        type="button"
-        onClick={onBackToLogin}
-        style={{ marginTop: "0.9rem" }}
-      >
-        Powrót do logowania
-      </button>
-    )}
+          <button
+            className="back-login-btn"
+            type="button"
+            onClick={onBackToLogin}
+            style={{ marginTop: '0.9rem' }}
+          >
+            Powrót do logowania
+          </button>
+        )}
       </form>
-      
     </div>
   );
 }

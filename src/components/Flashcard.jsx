@@ -1,32 +1,48 @@
 import { useState } from 'react';
 import './Flashcard.css';
 
-export default function Flashcard({ word, translation }) {
-  const [showTranslation, setShowTranslation] = useState(false);
-  const [answered, setAnswered] = useState(null);
+export default function Flashcard({ word, answer }) {
+  const [userInput, setUserInput] = useState('');
+  const [result, setResult] = useState(null); // 'correct' / 'wrong'
+
+  const handleCheck = e => {
+    e.preventDefault();
+    const normalizedUser = userInput.trim().toLowerCase();
+    const normalizedAnswer = answer.trim().toLowerCase();
+
+    if (!normalizedUser) return;
+
+    if (normalizedUser === normalizedAnswer) {
+      setResult('correct');
+    } else {
+      setResult('wrong');
+    }
+  };
 
   return (
     <div className="flashcard">
       <h2 className="flashcard-word">{word}</h2>
-      {!showTranslation ? (
-        <button className="flashcard-show-btn" onClick={() => setShowTranslation(true)}>
-          Pokaż tłumaczenie
+
+      <form className="flashcard-form" onSubmit={handleCheck}>
+        <input
+          type="text"
+          className="flashcard-input"
+          placeholder="Wpisz tłumaczenie..."
+          value={userInput}
+          onChange={e => setUserInput(e.target.value)}
+        />
+        <button type="submit" className="flashcard-check-btn">
+          Sprawdź
         </button>
-      ) : (
-        <>
-          <div className="flashcard-translation">{translation}</div>
-          <div className="flashcard-knowledge">
-            <p>Czy znałeś odpowiedź?</p>
-            <button className="flashcard-yes-btn" onClick={() => setAnswered(true)}>Tak</button>
-            <button className="flashcard-no-btn" onClick={() => setAnswered(false)}>Nie</button>
-          </div>
-          {answered === true && (
-            <p className="flashcard-success">Super!</p>
-          )}
-          {answered === false && (
-            <p className="flashcard-fail">Próbuj dalej!</p>
-          )}
-        </>
+      </form>
+
+      {result === 'correct' && (
+        <p className="flashcard-success">Dobrze!</p>
+      )}
+      {result === 'wrong' && (
+        <p className="flashcard-fail">
+          Niedokładnie, poprawna odpowiedź to: {answer}
+        </p>
       )}
     </div>
   );
