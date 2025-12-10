@@ -1,22 +1,32 @@
-@'
-# IDE
-.idea/
-.vscode/
-*.iml
+# --- Logs & Runtime ---
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS
-.DS_Store
-Thumbs.db
+# --- Dependencies & Build ---
+node_modules
+dist
+dist-ssr
+*.local
 
-# Backend/Maven
+# --- Backend / Java / Maven (z Twojej wersji) ---
 backend/target/
 backend/*.log
 backend/.env
+*.iml
 
-# Frontend/Vite
-frontend/node_modules/
-frontend/dist/
-frontend/.env
-'@ | Set-Content -Encoding UTF8 .gitignore
-
-git rm -r --cached .idea  # przestań śledzić pliki IntelliJ
+# --- Editor / IDE / OS ---
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
