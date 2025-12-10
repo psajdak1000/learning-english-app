@@ -65,15 +65,15 @@ export default function Register({ onRegister, onBackToHome, onBackToLogin }) {
           Zarejestruj się
         </button>
         {onBackToLogin && (
-          <button
-            className="back-login-btn"
-            type="button"
-            onClick={onBackToLogin}
-            style={{ marginTop: '0.9rem' }}
-          >
-            Powrót do logowania
-          </button>
-        )}
+      <button
+        className="back-login-btn"
+        type="button"
+        onClick={onBackToLogin}
+        style={{ marginTop: "0.9rem" }}
+      >
+        Powrót do logowania
+      </button>
+    )}
       </form>
     </div>
   );
