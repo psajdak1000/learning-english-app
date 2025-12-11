@@ -30,3 +30,10 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+.idea/
+frontend/
+frontend_kacper/
+node_modules/
+dist/
+.vite/
