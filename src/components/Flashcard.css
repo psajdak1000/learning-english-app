@@ -1,134 +1,131 @@
-.flashcard {
-  background: #181818;
-  border-radius: 21px;
-  box-shadow: 0 12px 32px #d32f2f24;
+/* Kontener 3D flip */
+.flashcard-container {
+  perspective: 1000px;
   width: 330px;
   margin: 2rem auto;
-  padding: 2.4rem;
-  color: #fafafa;
-  text-align: center;
-  letter-spacing: 0.04em;
 }
 
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Ustaw stałą wysokość */
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flashcard-container.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+/* OBA STRONY fiszki */
+.flashcard-front, .flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: linear-gradient(145deg, #181818, #1f1f2f);
+  border-radius: 21px;
+  box-shadow: 0 12px 32px rgba(211,47,47,0.14);
+  padding: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fafafa;
+}
+
+/* TYŁ - obrócony */
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+/* PRZÓD */
 .flashcard-word {
   color: #e53935;
   font-weight: bold;
   font-size: 1.7rem;
   margin-bottom: 1rem;
-  text-shadow: 0 1px 8px #d32f2f33;
-  letter-spacing: 0.05em;
+  text-shadow: 0 1px 8px rgba(211,47,47,0.2);
 }
 
-.flashcard-show-btn {
-  margin: 1.5rem 0;
-  background: linear-gradient(90deg, #e53935 0%, #b71c1c 100%);
+.flashcard-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background: #222;
+  color: #fafafa;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.flashcard-input:focus {
+  outline: none;
+  border-color: #e53935;
+  box-shadow: 0 0 10px rgba(229,57,53,0.3);
+}
+
+.flashcard-check-btn {
+  background: linear-gradient(90deg, #e53935, #b71c1c);
   color: #fff;
   border: none;
   border-radius: 13px;
-  padding: 0.8rem 2.1rem;
+  padding: 1rem 2rem;
   font-weight: 600;
   cursor: pointer;
   font-size: 1rem;
-  box-shadow: 0 2px 12px #d32f2f44;
-  transition: background 0.2s;
+  box-shadow: 0 4px 15px rgba(211,47,47,0.4);
+  transition: all 0.3s;
 }
 
-.flashcard-show-btn:hover {
-  background: #d32f2f;
-}
-
-.flashcard-translation {
-  font-size: 1.25rem;
-  color: #fafafa;
-  margin-bottom: 1.1rem;
-  border-bottom: 1px solid #b71c1c44;
-  padding-bottom: 0.7rem;
-  font-weight: 500;
-}
-
-.flashcard-knowledge p {
-  color: #ccc;
-  margin-bottom: 0.7rem;
-}
-
-.flashcard-yes-btn,
-.flashcard-no-btn {
-  background: #222;
-  border: none;
-  padding: 0.6rem 1.3rem;
-  border-radius: 8px;
-  font-weight: 600;
-  margin: 0 0.6rem 0 0;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.2s, color 0.2s;
-}
-.flashcard-yes-btn {
-  color: #e53935;
-}
-
-.flashcard-no-btn {
-  color: #fafafa;
-}
-
-.flashcard-yes-btn:hover {
-  background: #b71c1c;
-  color: #fff;
-}
-
-.flashcard-no-btn:hover {
-  background: #e53935;
-  color: #fff;
-}
-
-.flashcard-success {
-  color: #8bc34a;
-  margin-top: 1.2rem;
-  font-weight: bold;
-}
-
-.flashcard-fail {
-  color: #d32f2f;
-  margin-top: 1.2rem;
-  font-weight: bold;
-}
-.flashcards-categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-}
-
-.flashcards-category-btn {
-  min-width: 180px;
-  padding: 0.8rem 1.2rem;
-  border-radius: 12px;
-  border: none;
-  background: #1f1f1f;
-  color: #fafafa;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    background 0.15s ease;
-}
-
-.flashcards-category-btn:hover {
+.flashcard-check-btn:hover {
   transform: translateY(-2px);
-  background: #e53935;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 6px 20px rgba(211,47,47,0.5);
 }
-.flashcards-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+
+/* TYŁ - REZULTAT */
+.checkmark, .crossmark {
+  font-size: 4rem;
+  margin-bottom: 1rem;
 }
-.flashcards-small-back {
-  border: none;
-  background: none;
+
+.success-text {
+  color: #8bc34a;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(139,195,74,0.5);
+}
+
+.fail-text {
+  color: #ff6b6b;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(255,107,107,0.5);
+}
+
+.answer-text {
+  font-size: 1.3rem;
   color: #ccc;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+}
+
+.reset-btn {
+  background: linear-gradient(90deg, #4caf50, #388e3c);
+  color: #fff;
+  border: none;
+  border-radius: 13px;
+  padding: 1rem 2rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(76,175,80,0.4);
+  transition: all 0.3s;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76,175,80,0.5);
 }
