@@ -3,15 +3,17 @@ server:
     include-message: always
     include-binding-errors: always
 
-  spring:
+spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/registration
     username: postgres
-    password: twoje_haslo
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      # UWAGA: create-drop kasuje dane przy każdym restarcie aplikacji!
+      # Jeśli chcesz zachować dane, zmień na 'update'.
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

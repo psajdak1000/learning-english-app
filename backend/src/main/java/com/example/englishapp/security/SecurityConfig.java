@@ -1,10 +1,16 @@
 package com.example.englishapp.security;
 
+import com.example.englishapp.model.MyAppUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Dodany import
+import org.springframework.security.crypto.password.PasswordEncoder;   // Dodany import
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -12,8 +18,26 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@AllArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final MyAppUserService appUserService;
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(appUserService);
+        // Ustawiamy koder haseł (niezbędne, by porównać hasło z bazy z wpisanym)
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    // Bean definiujący, że używamy szyfrowania BCrypt
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,7 +57,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Konfiguracja CORS - pozwala Reactowi (port 5174) na dostęp
+    // Konfiguracja CORS - pozwala Reactowi na dostęp
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -44,7 +68,7 @@ public class SecurityConfig {
                 "http://localhost:5175",
                 "http://localhost:5178",
                 "http://localhost:5179"
-                ));
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
