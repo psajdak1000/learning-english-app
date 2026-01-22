@@ -6,13 +6,13 @@ import Login from './components/Login';
 import Register from './components/Register';
 import StartingPage from './components/StartingPage';
 import FlashcardsView from './components/FlashcardsView';
+import ChatBot from './components/ChatBot'; // <--- 1. NOWY IMPORT
 
 function App() {
     const [showStartAnimation, setShowStartAnimation] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // możesz tu dać 2200 albo 3000 ms – jak wolisz
         const timer = setTimeout(() => setShowStartAnimation(false), 2200);
         return () => clearTimeout(timer);
     }, []);
@@ -29,6 +29,11 @@ function App() {
 
     const handleFlashcardsClick = () => {
         navigate('/flashcards');
+    };
+
+    // <--- 2. NOWA FUNKCJA DO NAWIGACJI
+    const handleChatClick = () => {
+        navigate('/chat');
     };
 
     const handleBackToHome = () => {
@@ -52,12 +57,8 @@ function App() {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Sukces! Odpowiedź serwera:', data);
-
-                // np. zapis tokena
-                // localStorage.setItem('token', data.token);
-
                 alert('Zalogowano pomyślnie!');
-                navigate('/flashcards'); // albo '/', jak wolisz
+                navigate('/flashcards');
             } else {
                 alert('Nieprawidłowy login lub hasło.');
             }
@@ -74,7 +75,6 @@ function App() {
 
     return (
         <>
-            {/* ANIMACJA STARTOWA – możesz wziąć swoją ulubioną wersję */}
             <AnimatePresence>
                 {showStartAnimation && (
                     <motion.div
@@ -143,10 +143,8 @@ function App() {
                 )}
             </AnimatePresence>
 
-            {/* Główne widoki zarządzane przez router */}
             {!showStartAnimation && (
                 <Routes>
-                    {/* Strona startowa z trzema przyciskami */}
                     <Route
                         path="/"
                         element={
@@ -154,11 +152,11 @@ function App() {
                                 onLoginClick={handleLoginClick}
                                 onRegisterClick={handleRegisterClick}
                                 onFlashcardsClick={handleFlashcardsClick}
+                                onChatClick={handleChatClick} // <--- 3. PRZEKAZANIE PROPSA
                             />
                         }
                     />
 
-                    {/* Logowanie */}
                     <Route
                         path="/login"
                         element={
@@ -170,7 +168,6 @@ function App() {
                         }
                     />
 
-                    {/* Rejestracja */}
                     <Route
                         path="/signup"
                         element={
@@ -182,10 +179,15 @@ function App() {
                         }
                     />
 
-                    {/* Fiszki */}
                     <Route
                         path="/flashcards"
                         element={<FlashcardsView onBack={handleBackToHome} />}
+                    />
+
+                    {/* <--- 4. NOWA TRASA DLA CZATU */}
+                    <Route
+                        path="/chat"
+                        element={<ChatBot />}
                     />
                 </Routes>
             )}

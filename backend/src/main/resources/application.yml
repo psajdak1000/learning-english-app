@@ -11,10 +11,16 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      # UWAGA: create-drop kasuje dane przy każdym restarcie aplikacji!
-      # Jeśli chcesz zachować dane, zmień na 'update'.
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+huggingface:
+  api-url: https://router.huggingface.co/v1/chat/completions
+  api-token: ${HUGGINGFACE_API_TOKEN}
+  model: HuggingFaceTB/SmolLM3-3B:hf-inference
+  max-tokens: 150
+  temperature: 0.7
+  system-prompt: "/no_think\nJesteś nauczycielem angielskiego. Odpowiadaj krótko i jasno."
