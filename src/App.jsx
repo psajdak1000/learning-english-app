@@ -41,31 +41,27 @@ function App() {
     };
 
     // --- Logowanie do backendu ---
+// W pliku App.jsx
 
-    const handleLogin = async (credentials) => {
-        console.log('Próba logowania z danymi:', credentials);
+// Parametr nazywamy 'userData', bo to jest wynik logowania, a nie dane do logowania
+    const handleLogin = (userData) => {
+        // Krytyczne logi dla Ciebie, żebyś widział co przyszło
+        console.log('App.jsx: Otrzymano potwierdzenie logowania z Login.jsx');
+        console.log('App.jsx: Dane użytkownika:', userData);
 
-        try {
-            const response = await fetch('http://localhost:8080/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(credentials),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Sukces! Odpowiedź serwera:', data);
-                alert('Zalogowano pomyślnie!');
-                navigate('/flashcards');
-            } else {
-                alert('Nieprawidłowy login lub hasło.');
-            }
-        } catch (error) {
-            console.error('Błąd połączenia:', error);
-            alert('Błąd połączenia z serwerem. Czy Spring Boot jest włączony?');
+        // Weryfikacja "Sanity check" - czy na pewno dostaliśmy dane?
+        if (!userData || !userData.username) {
+            console.error("Błąd krytyczny: Login.jsx zgłosił sukces, ale nie przekazał danych!");
+            alert("Błąd logowania: Brak danych użytkownika.");
+            return;
         }
+
+        // 1. Aktualizacja stanu aplikacji (jeśli masz taki stan)
+        // setUser(userData);
+
+        // 2. Przekierowanie
+        alert(`Witaj ponownie, ${userData.username}!`);
+        navigate('/flashcards');
     };
 
     const handleRegister = (credentials) => {

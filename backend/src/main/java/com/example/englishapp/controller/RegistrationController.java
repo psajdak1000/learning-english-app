@@ -4,25 +4,30 @@ import com.example.englishapp.model.MyAppUser;
 import com.example.englishapp.model.MyAppUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor // 1. To automatycznie tworzy konstruktor dla pól poniżej (wstrzykiwanie)
+@RequestMapping("/api/auth") // 1. Dodajemy wspólny prefiks dla endpointów związanych z autoryzacją
+@CrossOrigin(origins = "http://localhost:5173") // 2. Ustawiamy CORS dla frontendu (5173 to port Vite)
+@AllArgsConstructor
 public class RegistrationController {
 
-    private final MyAppUserRepository myAppUserRepository; // 2. Deklarujemy repozytorium
-    private final PasswordEncoder passwordEncoder;         // 3. Deklarujemy koder haseł
+    private final MyAppUserRepository myAppUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @PostMapping(value = "/req/signup", consumes = "application/json")
+    // Teraz adres to: POST http://localhost:8080/api/auth/register
+    @PostMapping("/register")
     public MyAppUser createUser(@RequestBody MyAppUser user) {
 
-        // 4. Szyfrujemy hasło przed zapisem do bazy!
-        // Bez tego nie będziesz mógł się potem zalogować.
+        // 1. Szyfrujemy hasło (to już masz i jest OK)
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // 5. Używamy standardowej metody .save()
+        // 2. NAPRAWA NULLA: Jeśli username jest pusty, przypisz mu wartość z emaila
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
+            user.setUsername(user.getEmail());
+        }
+
+        // 3. Zapisujemy kompletnego użytkownika
         return myAppUserRepository.save(user);
     }
 }
