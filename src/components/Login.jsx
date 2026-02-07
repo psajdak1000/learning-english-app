@@ -2,23 +2,58 @@ import { useState } from 'react';
 import './Login.css';
 
 export default function Login({ onLogin, onBackToHome, onRegisterClick }) {
-    // Logowanie po nazwie użytkownika (username), zgodnie z LoginRequest w backendzie
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    // Dodajemy 'async', żeby obsłużyć połączenie sieciowe
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // 1. Szybka walidacja w przeglądarce
         if (!username || !password) {
             setError('Wszystkie pola są wymagane!');
             return;
         }
-
         setError('');
 
-        // Wysyłamy username + password, tak jak oczekuje backend
-        onLogin && onLogin({ username, password });
+        // 2. ŁĄCZENIE Z BACKENDEM
+        try {
+            // Upewnij się, że ten adres pasuje do Twojego kontrolera w Springu (np. AuthController)
+            const response = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username, // Upewnij się, że backend oczekuje pola 'username' (a nie 'email'!)
+                    password: password
+                }),
+            });
+
+            if (response.ok) {
+                // SUKCES (Kod 200)
+                // Często backend zwraca tutaj token (JWT) lub dane użytkownika
+                const data = await response.json();
+
+                // Opcjonalnie: Zapisz token w przeglądarce, jeśli używasz JWT
+                // localStorage.setItem('token', data.token);
+
+                alert("Zalogowano pomyślnie!");
+
+                // Wywołujemy funkcję z App.jsx, żeby zmienić ekran na główny
+                if (onLogin) {
+                    onLogin(data);
+                }
+            } else {
+                // BŁĄD Logowania (np. kod 401 - złe hasło)
+                setError("Nieprawidłowy login lub hasło.");
+            }
+        } catch (err) {
+            // BŁĄD POŁĄCZENIA (np. wyłączony serwer)
+            console.error(err);
+            setError("Błąd połączenia z serwerem.");
+        }
     };
 
     const handleRegisterClick = (e) => {

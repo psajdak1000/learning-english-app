@@ -1,32 +1,48 @@
 package com.example.englishapp.controller;
 
-
-
 import com.example.englishapp.dto.LoginRequest;
+import com.example.englishapp.model.MyAppUser;
+import com.example.englishapp.model.MyAppUserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
-@RestController // To klucz! Mówi: "Będę zwracać dane (JSON), a nie widoki HTML"
+@RestController
 @RequestMapping("/api/auth")
-// WAŻNE: To pozwala Reactowi (port 5174) gadać z Backendem (port 8080). Bez tego przeglądarka zablokuje zapytanie.
-@CrossOrigin(origins = "http://localhost:5174")
+@AllArgsConstructor // To nam wstrzyknie repozytorium i encoder
+// POPRAWKA PORTU: Masz 5173 na screenach, więc tu też musi być 5173
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
+
+    private final MyAppUserRepository myAppUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        // @RequestBody bierze JSON z Reacta i zamienia go na obiekt Java
+        String loginInput = request.getUsername();
 
-        System.out.println("Próba logowania: " + request.getUsername());
+        // --- DIAGNOSTYKA START ---
+        System.out.println("1. Próba logowania. Otrzymany tekst: '" + loginInput + "'");
+        // --- DIAGNOSTYKA KONIEC ---
 
-        // PROSTA SYMULACJA LOGIKI (później podepniesz tu bazę danych)
-        if ("admin".equals(request.getUsername()) && "haslo123".equals(request.getPassword())) {
-            // Sukces - zwracamy JSON: {"message": "Zalogowano", "status": "OK"}
-            return ResponseEntity.ok(Map.of("message", "Zalogowano pomyślnie", "token", "fake-jwt-token"));
+        Optional<MyAppUser> userOptional = myAppUserRepository.findByUsernameOrEmail(loginInput, loginInput);
+
+        if (userOptional.isPresent()) {
+            System.out.println("2. SUKCES: Znaleziono użytkownika w bazie: " + userOptional.get().getUsername());
+            MyAppUser user = userOptional.get();
+            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                return ResponseEntity.ok(Map.of("message", "Zalogowano!", "username", user.getUsername()));
+            } else {
+                System.out.println("3. BŁĄD: Hasło się nie zgadza.");
+            }
         } else {
-            // Błąd - zwracamy kod 401 (Unauthorized)
-            return ResponseEntity.status(401).body(Map.of("error", "Złe hasło lub login"));
+            System.out.println("2. BŁĄD: Nie znaleziono takiego użytkownika w bazie ani po loginie, ani po emailu.");
         }
+
+        return ResponseEntity.status(401).body(Map.of("error", "Złe dane logowania"));
     }
 }
