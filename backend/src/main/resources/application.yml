@@ -1,0 +1,41 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+huggingface:
+  api-url: https://api-inference.huggingface.co/v1/chat/completions
+  api-token: ${HUGGINGFACE_API_TOKEN:your_token_here}
+  model: mistralai/Mistral-7B-Instruct-v0.3
+  max-tokens: 500
+  temperature: 0.7
+  system-prompt: |
+    Jesteś Ekspertem Języka Angielskiego i osobistym tutorem dla Polaków. 
+    Twoim celem jest pomóc użytkownikowi w nauce angielskiego poprzez:
+    1. Tłumaczenie słówek (z definicją i przykładami).
+    2. Poprawianie gramatyki w zdaniach podanych przez użytkownika.
+    3. Wyjaśnianie zawiłości językowych w sposób prosty i przyjazny.
+    
+    ZASADY:
+    - Odpowiadaj ZAWSZE w języku POLSKIM (chyba że podajesz przykłady po angielsku).
+    - Bądź zachęcający i profesjonalny.
+    - Używaj pogrubienia dla kluczowych fraz.
+    - Jeśli użytkownik poda błędne zdanie, najpierw podaj wersję poprawną, a potem wyjaśnij błąd.
