@@ -43,8 +43,12 @@ public class HuggingFaceService {
                 return "I'm doing great, thank you for asking! A Ty jak się czujesz? (How do you feel today?)";
             } else if (lowerMsg.contains("i is")) {
                 return "Widzę błąd! W języku angielskim z 'I' używamy 'am'. Poprawna wersja to: **I am**. Przykład: *I am a student*.";
+            } else if (lowerMsg.contains("she go")) {
+                return "Uważaj na 3. osobę liczby pojedynczej (He/She/It)! Dodajemy końcówkę '-s' lub '-es'. Poprawnie: **She goes**. Przykład: *She goes to school every day*.";
             } else if (lowerMsg.contains("apple")) {
                 return "**Apple** oznacza po polsku **jabłko**. \nSynonimy: fruit (ogólnie). \nPrzykład: *I eat an apple every day* (Jem jabłko każdego dnia).";
+            } else if (lowerMsg.contains("present simple")) {
+                return "Present Simple używamy do opisywania czynności rutynowych i faktów. \nBudowa: Podmiot + Czasownik (w 3 os. + s/es). \nPrzykład: *I drink coffee* vs *He drinks coffee*. Chcesz poćwiczyć?";
             }
             return "Witaj! Jestem Twoim nauczycielem angielskiego (tryb demo). \n\nAby otrzymać prawdziwe odpowiedzi od AI (Mistral-7B), wpisz swój klucz API w pliku `application.yml`. \n\nTwoja wiadomość: \"" + userMessage + "\" została odebrana, ale w trybie demo potrafię odpowiedzieć tylko na podstawowe frazy (jak 'hello' lub 'i is').";
         }

@@ -61,8 +61,17 @@ export default function ChatBot() {
     return (
         <div className="chat-container">
             <div className="chat-header">
-                <h2>🤖 AI English Tutor</h2>
-                <button onClick={() => navigate('/')} className="back-btn">Wróć</button>
+                <div className="header-info">
+                    <div className="bot-avatar">🤖</div>
+                    <div className="bot-status">
+                        <h2>AI English Master</h2>
+                        <span className="status-online">Online & Ready to Help</span>
+                    </div>
+                </div>
+                <div className="header-actions">
+                    <button onClick={() => setMessages([])} className="clear-btn" title="Wyczyść rozmowę">🗑️</button>
+                    <button onClick={() => navigate('/')} className="back-btn">Zamknij</button>
+                </div>
             </div>
 
             <div className="messages-area">
