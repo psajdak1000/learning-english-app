@@ -1,0 +1,195 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--navbar-height);
+  background-color: transparent;
+  transition: background-color var(--transition-base), box-shadow var(--transition-base),
+    backdrop-filter var(--transition-base);
+}
+
+.header.scrolled {
+  background-color: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: var(--space-8);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+
+.logoDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Nav links */
+.navLinks {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+@media (min-width: 768px) {
+  .navLinks {
+    display: flex;
+  }
+}
+
+.navLink {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-raised);
+}
+
+.navLinkActive {
+  color: var(--color-primary);
+}
+
+/* Actions */
+.actions {
+  display: none;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+@media (min-width: 768px) {
+  .actions {
+    display: flex;
+    margin-left: 0;
+  }
+}
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.themeToggle:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-raised);
+}
+
+.btnGhost {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btnGhost:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-raised);
+}
+
+.btnPrimary {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Mobile toggle */
+.menuToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--color-text);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.menuToggle:hover {
+  background-color: var(--color-surface-raised);
+}
+
+@media (min-width: 768px) {
+  .menuToggle {
+    display: none;
+  }
+}
+
+/* Mobile menu */
+.mobileMenu {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.mobileLink {
+  display: block;
+  padding: var(--space-3) var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: color var(--transition-fast);
+}
+
+.mobileLink:hover {
+  color: var(--color-text);
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  flex-wrap: wrap;
+}

@@ -9,9 +9,11 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -23,6 +25,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final MyAppUserService appUserService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     /**
      * BEAN 1: Dostawca uwierzytelniania.
@@ -59,6 +63,12 @@ public class SecurityConfig {
                 // 2. Włączamy CORS, żeby React (inny port) mógł pytać Springa.
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
+                // 2a. API bezstanowe (JWT w nagłówku Authorization)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 2b. Spójny response dla 401
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(restAuthenticationEntryPoint))
+
                 // 3. ZASADY DOSTĘPU (Tu zmieniasz najczęściej!)
                 .authorizeHttpRequests(auth -> auth
                         // --- STREFA PUBLICZNA (Dostępna dla każdego) ---
@@ -75,7 +85,10 @@ public class SecurityConfig {
                         // --- STREFA PRYWATNA (Wymaga zalogowania) ---
                         // Każde inne zapytanie, którego nie wymieniłeś wyżej, wymaga bycia zalogowanym.
                         .anyRequest().authenticated()
-                );
+                    )
+
+                    // 4. JWT filter przed standardowym filtrem logowania
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

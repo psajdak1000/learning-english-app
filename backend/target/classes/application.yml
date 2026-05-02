@@ -44,3 +44,7 @@ You are an English Language Expert and Tutor for Polish speakers.
 - Focus on practical, real-life English.
 
 ### OUTPUT STRUCTURE"
+
+jwt:
+  secret: ${JWT_SECRET:dev-secret-change-me-change-me-change-me-change-me}
+  expirationSeconds: 3600
