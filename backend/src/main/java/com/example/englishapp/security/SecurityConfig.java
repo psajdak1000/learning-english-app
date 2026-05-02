@@ -75,6 +75,9 @@ public class SecurityConfig {
                         // Logowanie i Rejestracja
                         .requestMatchers("/api/auth/**").permitAll()
 
+                    // Swagger/OpenAPI
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+
                         // Endpointy WebSocket (jeśli kiedyś dodasz czat na żywo z ludźmi)
                         .requestMatchers("/ws/**").permitAll()
 
