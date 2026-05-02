@@ -5,6 +5,10 @@ import com.example.englishapp.dto.ErrorResponse;
 import com.example.englishapp.dto.UserResponse;
 import com.example.englishapp.model.MyAppUser;
 import com.example.englishapp.model.MyAppUserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,6 +23,7 @@ import java.time.Instant;
 @RequestMapping("/api/auth") // 1. Dodajemy wspólny prefiks dla endpointów związanych z autoryzacją
 @CrossOrigin(origins = "http://localhost:5173") // 2. Ustawiamy CORS dla frontendu (5173 to port Vite)
 @AllArgsConstructor
+@Tag(name = "Auth")
 public class RegistrationController {
 
     private final MyAppUserRepository myAppUserRepository;
@@ -26,6 +31,15 @@ public class RegistrationController {
 
     // Teraz adres to: POST http://localhost:8080/api/auth/register
     @PostMapping("/register")
+        @Operation(
+            summary = "Register user",
+            description = "Public endpoint. Registers a new user."
+        )
+        @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "409", description = "Conflict")
+        })
     public ResponseEntity<?> createUser(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
         if (request == null) {
             return ResponseEntity.badRequest().body(buildError("Invalid request body", HttpStatus.BAD_REQUEST, httpRequest));

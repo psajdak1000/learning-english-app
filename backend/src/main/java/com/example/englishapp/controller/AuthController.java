@@ -6,6 +6,10 @@ import com.example.englishapp.dto.UserResponse;
 import com.example.englishapp.model.MyAppUser;
 import com.example.englishapp.model.MyAppUserRepository;
 import com.example.englishapp.security.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -24,6 +28,7 @@ import java.util.Optional;
 @AllArgsConstructor // To nam wstrzyknie repozytorium i encoder
 // POPRAWKA PORTU: Masz 5173 na screenach, więc tu też musi być 5173
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Auth")
 public class AuthController {
 
     private final MyAppUserRepository myAppUserRepository;
@@ -31,6 +36,15 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
+        @Operation(
+            summary = "Login user",
+            description = "Public endpoint. Authenticates user and returns JWT access token."
+        )
+        @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+        })
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         String loginInput = request.getUsername();
 
