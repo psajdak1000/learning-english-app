@@ -75,10 +75,6 @@ public class SecurityConfig {
                         // Logowanie i Rejestracja
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Czat AI (otwieramy, żeby działał bez tokena na start)
-                        // W przyszłości, jak naprawisz logowanie tokenem w React, możesz to usunąć/zmienić.
-                        .requestMatchers("/api/bot/**").permitAll()
-
                         // Endpointy WebSocket (jeśli kiedyś dodasz czat na żywo z ludźmi)
                         .requestMatchers("/ws/**").permitAll()
 
