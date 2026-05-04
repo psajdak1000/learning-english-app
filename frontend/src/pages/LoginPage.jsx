@@ -2,21 +2,22 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { AuthLayout } from '../components/Auth/AuthLayout/AuthLayout';
+import { login } from '../api/authApi';
+import { setCurrentUser, setToken } from '../api/tokenStorage';
 import styles from './AuthPage.module.css';
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '', remember: false });
+  const [form, setForm] = useState({ username: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function validate() {
     const next = {};
-    if (!form.email.trim()) {
-      next.email = 'Adres e-mail jest wymagany.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      next.email = 'Podaj poprawny adres e-mail.';
+    if (!form.username.trim()) {
+      next.username = 'Nazwa użytkownika jest wymagana.';
     }
     if (!form.password) {
       next.password = 'Hasło jest wymagane.';
@@ -28,6 +29,7 @@ export function LoginPage() {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
+    if (submitError) setSubmitError('');
   }
 
   async function handleSubmit(e) {
@@ -38,32 +40,46 @@ export function LoginPage() {
       return;
     }
     setIsSubmitting(true);
-    /* TODO: wire up real auth API call here */
-    await new Promise((r) => setTimeout(r, 800));
-    setIsSubmitting(false);
-    navigate('/');
+    setSubmitError('');
+    try {
+      const data = await login({
+        username: form.username.trim(),
+        password: form.password,
+      });
+      setToken(data.accessToken);
+      setCurrentUser(data.user);
+      navigate('/');
+    } catch (err) {
+      if (err?.status === 401) {
+        setSubmitError('Nieprawidłowa nazwa użytkownika lub hasło.');
+      } else {
+        setSubmitError(err?.message || 'Nie udało się zalogować.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <AuthLayout title='Zaloguj się' subtitle='Witaj z powrotem — kontynuuj naukę tam, gdzie skończyłeś.'>
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <div className={styles.field}>
-          <label className={styles.label} htmlFor='login-email'>
-            Adres e-mail
+          <label className={styles.label} htmlFor='login-username'>
+            Nazwa użytkownika
           </label>
           <input
-            id='login-email'
-            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-            type='email'
-            name='email'
-            autoComplete='email'
-            placeholder='twoj@email.com'
-            value={form.email}
+            id='login-username'
+            className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
+            type='text'
+            name='username'
+            autoComplete='username'
+            placeholder='twoj_login'
+            value={form.username}
             onChange={handleChange}
           />
-          {errors.email && (
+          {errors.username && (
             <span className={styles.errorMsg} role='alert'>
-              {errors.email}
+              {errors.username}
             </span>
           )}
         </div>
@@ -114,6 +130,12 @@ export function LoginPage() {
           />
           Zapamiętaj mnie
         </label>
+
+        {submitError && (
+          <span className={styles.errorMsg} role='alert'>
+            {submitError}
+          </span>
+        )}
 
         <button type='submit' className={styles.submitBtn} disabled={isSubmitting}>
           {isSubmitting ? (
