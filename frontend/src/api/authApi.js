@@ -6,3 +6,10 @@ export const login = async ({ username, password }) =>
     body: { username, password },
     auth: false,
   });
+
+export const register = async ({ username, email, password }) =>
+  apiRequest('/api/auth/register', {
+    method: 'POST',
+    body: { username, email, password },
+    auth: false,
+  });

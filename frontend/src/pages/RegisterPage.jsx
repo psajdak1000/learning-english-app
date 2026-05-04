@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { AuthLayout } from '../components/Auth/AuthLayout/AuthLayout';
+import { register } from '../api/authApi';
 import styles from './AuthPage.module.css';
 
 function getPasswordStrength(password) {
@@ -22,7 +23,7 @@ const strengthLabels = { weak: 'Słabe', fair: 'Przeciętne', good: 'Dobre', str
 export function RegisterPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -32,12 +33,14 @@ export function RegisterPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState('');
 
   const strength = getPasswordStrength(form.password);
 
   function validate() {
     const next = {};
-    if (!form.name.trim()) next.name = 'Imię jest wymagane.';
+    if (!form.username.trim()) next.username = 'Nazwa użytkownika jest wymagana.';
     if (!form.email.trim()) {
       next.email = 'Adres e-mail jest wymagany.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -61,6 +64,8 @@ export function RegisterPage() {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
+    if (submitError) setSubmitError('');
+    if (submitSuccess) setSubmitSuccess('');
   }
 
   async function handleSubmit(e) {
@@ -71,32 +76,49 @@ export function RegisterPage() {
       return;
     }
     setIsSubmitting(true);
-    /* TODO: wire up real auth API call here */
-    await new Promise((r) => setTimeout(r, 900));
-    setIsSubmitting(false);
-    navigate('/');
+    setSubmitError('');
+    setSubmitSuccess('');
+    try {
+      await register({
+        username: form.username.trim(),
+        email: form.email.trim(),
+        password: form.password,
+      });
+      setSubmitSuccess('Konto utworzone. Przekierowuję do logowania…');
+      setTimeout(() => navigate('/login'), 800);
+    } catch (err) {
+      if (err?.status === 409) {
+        setSubmitError(err?.message || 'Nazwa użytkownika lub e-mail jest już zajęty.');
+      } else if (err?.status === 400) {
+        setSubmitError(err?.message || 'Niepoprawne dane rejestracji.');
+      } else {
+        setSubmitError(err?.message || 'Nie udało się utworzyć konta.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <AuthLayout title='Utwórz konto' subtitle=''>
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <div className={styles.field}>
-          <label className={styles.label} htmlFor='reg-name'>
-            Imię
+          <label className={styles.label} htmlFor='reg-username'>
+            Nazwa użytkownika
           </label>
           <input
-            id='reg-name'
-            className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
+            id='reg-username'
+            className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
             type='text'
-            name='name'
-            autoComplete='given-name'
-            placeholder='Jak masz na imię?'
-            value={form.name}
+            name='username'
+            autoComplete='username'
+            placeholder='twoj_login'
+            value={form.username}
             onChange={handleChange}
           />
-          {errors.name && (
+          {errors.username && (
             <span className={styles.errorMsg} role='alert'>
-              {errors.name}
+              {errors.username}
             </span>
           )}
         </div>
@@ -227,6 +249,17 @@ export function RegisterPage() {
             </span>
           )}
         </div>
+
+        {submitError && (
+          <span className={styles.errorMsg} role='alert'>
+            {submitError}
+          </span>
+        )}
+        {submitSuccess && (
+          <span className={styles.switchText} role='status'>
+            {submitSuccess}
+          </span>
+        )}
 
         <button type='submit' className={styles.submitBtn} disabled={isSubmitting}>
           {isSubmitting ? (
