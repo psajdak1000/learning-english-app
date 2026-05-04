@@ -65,7 +65,7 @@ export function LoginPage() {
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <div className={styles.field}>
           <label className={styles.label} htmlFor='login-username'>
-            Nazwa użytkownika
+            Nazwa użytkownika lub e-mail
           </label>
           <input
             id='login-username'
@@ -73,7 +73,7 @@ export function LoginPage() {
             type='text'
             name='username'
             autoComplete='username'
-            placeholder='twoj_login'
+            placeholder='janek lub janek@example.com'
             value={form.username}
             onChange={handleChange}
           />

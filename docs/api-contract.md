@@ -93,7 +93,10 @@ Bledy:
 - 400 Bad Request
 - 401 Unauthorized
 
-Uwaga: tokenType ma wartosc Bearer.
+Uwagi:
+- Pole `username` może zawierać zarówno nazwę użytkownika, jak i adres e-mail. Backend szuka użytkownika po obu polach.
+- tokenType ma wartosc Bearer.
+- response nie zawiera password ani hash hasla.
 
 ## 5. Endpointy chronione JWT
 Wymagany naglowek:
