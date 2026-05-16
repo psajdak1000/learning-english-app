@@ -1,0 +1,14 @@
+{
+  "name": "englishapp-e2e-tests",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.43.0"
+  }
+}

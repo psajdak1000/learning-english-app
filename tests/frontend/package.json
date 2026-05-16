@@ -1,0 +1,24 @@
+{
+  "name": "englishapp-frontend-tests",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "test": "cd ../../frontend && npx vitest run --root ../tests/frontend --config ../tests/frontend/vitest.config.js",
+    "test:watch": "cd ../../frontend && npx vitest --root ../tests/frontend --config ../tests/frontend/vitest.config.js",
+    "test:coverage": "cd ../../frontend && npx vitest run --coverage --root ../tests/frontend --config ../tests/frontend/vitest.config.js"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.2.0",
+    "@testing-library/jest-dom": "^6.4.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "jsdom": "^24.0.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "react-router-dom": "^6.23.0",
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.368.0",
+    "vitest": "^1.6.0"
+  }
+}
