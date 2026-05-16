@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+@'
+>>>>>>> c8ffd4e5e7127d3f547d8156d2e98d21f61fa7d7
 # IDE
 .idea/
 .vscode/
@@ -11,14 +15,22 @@ Thumbs.db
 backend/target/
 backend/*.log
 backend/.env
+<<<<<<< HEAD
 backend/apache-maven-*
 backend/maven.zip
 tests/backend/target/
 tests/e2e/test-results/
 tests/e2e/playwright-report/
 tests/e2e/blob-report/
+=======
+>>>>>>> c8ffd4e5e7127d3f547d8156d2e98d21f61fa7d7
 
 # Wszystkie node_modules (gdziekolwiek sa)
 node_modules/
 dist/
+<<<<<<< HEAD
 .env
+=======
+.env
+'@ | Set-Content -Encoding UTF8 .gitignore
+>>>>>>> c8ffd4e5e7127d3f547d8156d2e98d21f61fa7d7
