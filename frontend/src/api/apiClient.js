@@ -1,6 +1,6 @@
 import { getToken } from './tokenStorage';
 
-const DEFAULT_BASE_URL = 'http://localhost:8080';
+const DEFAULT_BASE_URL = 'http://localhost:19090';
 
 const getBaseUrl = () =>
   (import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE_URL).replace(/\/$/, '');

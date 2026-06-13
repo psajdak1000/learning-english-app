@@ -1,20 +1,24 @@
 package com.example.englishapp.controller;
 
-
-import com.example.englishapp.dto.ChatRequest; // Upewnij się, że masz tę klasę (z poprzedniego kroku)
+import com.example.englishapp.dto.ChatRequest;
 import com.example.englishapp.model.HuggingFaceService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bot")
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"})
 @AllArgsConstructor
 @Tag(name = "Bot")
 public class BotController {
@@ -24,15 +28,13 @@ public class BotController {
     @PostMapping("/ask")
     @Operation(
             summary = "Ask AI bot",
-            description = "Sends a question to the AI bot. Requires Authorization: Bearer <token>."
+            description = "Sends a question to the AI bot."
     )
-    @SecurityRequirement(name = "bearerAuth")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+            @ApiResponse(responseCode = "400", description = "Bad Request")
     })
-    public Map<String, String> askBot(@RequestBody ChatRequest request) {
+    public Map<String, String> askBot(@Valid @RequestBody ChatRequest request) {
         String answer = aiService.getChatResponse(request.getQuestion());
         return Map.of("answer", answer);
     }

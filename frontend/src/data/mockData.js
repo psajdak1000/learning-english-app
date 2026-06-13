@@ -10,9 +10,10 @@ import {
 export const navLinks = [
   { label: 'Quizy', path: '/quizzes' },
   { label: 'Fiszki', path: '/flashcards' },
+  { label: 'Wyniki', path: '/results' },
+  { label: 'Postep', path: '/progress' },
   { label: 'Turnieje', path: '/tournaments' },
   { label: 'AI Chat', path: '/ai-chat' },
-  { label: 'Postępy', path: '/progress' },
 ];
 
 export const features = [
@@ -235,3 +236,4 @@ export const footerLinks = {
     { label: 'Ustawienia cookies', path: '/cookies' },
   ],
 };
+

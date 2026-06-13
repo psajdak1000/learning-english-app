@@ -1,10 +1,14 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useTheme } from './hooks/useTheme';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppShell } from './components/AppShell/AppShell';
+import { useTheme } from './hooks/useTheme';
+import { FlashcardsPage } from './pages/FlashcardsPage';
+import { BotPage } from './pages/BotPage';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
+import { ProgressPage } from './pages/ProgressPage';
+import { QuizPage } from './pages/QuizPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { FlashcardsPage } from './pages/FlashcardsPage';
+import { ResultsPage } from './pages/ResultsPage';
 import { StudyPage } from './pages/StudyPage';
 
 export default function App() {
@@ -24,11 +28,17 @@ export default function App() {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/flashcards' element={shell(<FlashcardsPage />)} />
         <Route path='/flashcards/:deckId/study' element={shell(<StudyPage />)} />
-        {/* Future routes mount here */}
-        <Route path='/quizzes' element={shell(<div style={{ padding: '4rem 2rem' }}>Quizy — wkrótce</div>)} />
-        <Route path='/tournaments' element={shell(<div style={{ padding: '4rem 2rem' }}>Turnieje — wkrótce</div>)} />
-        <Route path='/ai-chat' element={shell(<div style={{ padding: '4rem 2rem' }}>AI Chat — wkrótce</div>)} />
-        <Route path='/progress' element={shell(<div style={{ padding: '4rem 2rem' }}>Postępy — wkrótce</div>)} />
+        <Route path='/quizzes' element={shell(<QuizPage />)} />
+        <Route
+          path='/tournaments'
+          element={shell(<div style={{ padding: '4rem 2rem' }}>Turnieje - wkrotce</div>)}
+        />
+        <Route
+          path='/ai-chat'
+          element={shell(<BotPage />)}
+        />
+        <Route path='/progress' element={shell(<ProgressPage />)} />
+        <Route path='/results' element={shell(<ResultsPage />)} />
       </Routes>
     </BrowserRouter>
   );

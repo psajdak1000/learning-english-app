@@ -1,9 +1,14 @@
 package com.example.englishapp.model;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -22,26 +27,31 @@ public class HuggingFaceService {
     @Value("${huggingface.model}")
     private String model;
 
-    // Domyślne wartości, gdybyś nie dodał do application.yml
-    @Value("${huggingface.max-tokens:150}")
+    @Value("${huggingface.max-tokens:180}")
     private int maxTokens;
 
     @Value("${huggingface.temperature:0.7}")
     private double temperature;
 
-    @Value("${huggingface.system-prompt:Jesteś nauczycielem angielskiego. Odpowiadaj krótko i jasno.}")
+    @Value("${huggingface.system-prompt:Jestes nauczycielem jezyka angielskiego. Odpowiadaj krotko i jasno.}")
     private String systemPrompt;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String getChatResponse(String userMessage) {
+        if (!StringUtils.hasText(apiToken)) {
+            return "Brak tokena Hugging Face. Ustaw HUGGINGFACE_API_TOKEN.";
+        }
+
+        if (!StringUtils.hasText(userMessage)) {
+            return "Pytanie jest puste. Podaj tresc pytania.";
+        }
+
         try {
-            // --- Headers ---
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(apiToken);
 
-            // --- Body (OpenAI-compatible chat completions) ---
             List<Map<String, Object>> messages = List.of(
                     Map.of("role", "system", "content", systemPrompt),
                     Map.of("role", "user", "content", userMessage)
@@ -54,49 +64,54 @@ public class HuggingFaceService {
             payload.put("temperature", temperature);
 
             HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, request, Map.class);
+            Map<?, ?> body = response.getBody();
 
-            System.out.println(">>> DEBUG: POST " + apiUrl);
-            System.out.println(">>> DEBUG: model=" + model + ", max_tokens=" + maxTokens + ", temperature=" + temperature);
+            if (body == null) {
+                return "Brak odpowiedzi od modelu Hugging Face.";
+            }
 
-            ResponseEntity<Map> resp = restTemplate.postForEntity(apiUrl, request, Map.class);
-
-            Map<?, ?> body = resp.getBody();
-            if (body == null) return "Błąd: Pusta odpowiedź od modelu.";
-
-            // --- Parse: choices[0].message.content ---
             Object choicesObj = body.get("choices");
             if (!(choicesObj instanceof List<?> choices) || choices.isEmpty()) {
-                return "Błąd: Brak 'choices' w odpowiedzi: " + body;
+                return "Nieprawidlowy format odpowiedzi z Hugging Face (brak choices).";
             }
 
             Object firstChoiceObj = choices.get(0);
             if (!(firstChoiceObj instanceof Map<?, ?> firstChoice)) {
-                return "Błąd: Nieoczekiwany format 'choices[0]': " + firstChoiceObj;
+                return "Nieprawidlowy format odpowiedzi z Hugging Face (choices[0]).";
             }
 
-            // Najczęściej: message.content
             Object messageObj = firstChoice.get("message");
             if (messageObj instanceof Map<?, ?> message) {
                 Object contentObj = message.get("content");
-                if (contentObj != null) return contentObj.toString();
+                if (contentObj != null) {
+                    return contentObj.toString();
+                }
             }
 
-            // Fallback (gdyby kiedyś wleciał format delta)
             Object deltaObj = firstChoice.get("delta");
             if (deltaObj instanceof Map<?, ?> delta) {
                 Object contentObj = delta.get("content");
-                if (contentObj != null) return contentObj.toString();
+                if (contentObj != null) {
+                    return contentObj.toString();
+                }
             }
 
-            return "Błąd: Brak 'message.content' w odpowiedzi: " + body;
-
+            return "Brak tekstu odpowiedzi modelu (message.content).";
         } catch (HttpStatusCodeException e) {
-            String body = e.getResponseBodyAsString();
-            return "Błąd HTTP " + e.getStatusCode().value() + " (" + e.getStatusText() + ")"
-                    + (body != null && !body.isBlank() ? " | body: " + body : "");
+            int status = e.getStatusCode().value();
+            if (status == 401 || status == 403) {
+                return "Hugging Face odrzucil autoryzacje (401/403). Sprawdz HUGGINGFACE_API_TOKEN.";
+            }
+            return "Blad Hugging Face HTTP " + status + ". Sprobuj ponownie pozniej.";
+        } catch (ResourceAccessException e) {
+            String msg = e.getMessage() == null ? "" : e.getMessage().toLowerCase();
+            if (msg.contains("timed out") || msg.contains("timeout")) {
+                return "Przekroczono limit czasu polaczenia z Hugging Face. Sprobuj ponownie.";
+            }
+            return "Brak polaczenia z Hugging Face. Sprawdz siec lub HUGGINGFACE_API_URL.";
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Serwer AI jest przeciążony lub wystąpił błąd. (" + e.getMessage() + ")";
+            return "Wystapil blad podczas komunikacji z Hugging Face.";
         }
     }
 }

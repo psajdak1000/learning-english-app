@@ -1,11 +1,13 @@
 package com.example.englishapp.dto;
 
-import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Data
 @Schema(description = "Chat request payload")
 public class ChatRequest {
-    @Schema(description = "User question for the AI bot", example = "How do I say 'dzień dobry' in English?")
+    @NotBlank(message = "Question is required")
+    @Schema(description = "User question for the AI bot", example = "Explain the difference between borrow and lend")
     private String question;
 }
